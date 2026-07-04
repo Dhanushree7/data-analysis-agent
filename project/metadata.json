@@ -1,0 +1,6 @@
+{
+  "name": "Data Analysis Agent",
+  "description": "An agentic AI web application that executes Python/Pandas code on uploaded datasets to perform calculations, filter operations, aggregations, and dynamic visualizations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

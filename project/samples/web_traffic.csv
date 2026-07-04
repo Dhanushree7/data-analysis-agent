@@ -1,0 +1,17 @@
+Date,Source,Device,Visits,Bounce_Rate,Conversions,Revenue
+2026-06-01,Google Search,Desktop,1500,0.42,45,2250
+2026-06-01,Google Search,Mobile,1200,0.55,24,960
+2026-06-01,Facebook Ads,Mobile,800,0.65,32,1600
+2026-06-01,Direct Traffic,Desktop,500,0.30,15,750
+2026-06-02,Google Search,Desktop,1600,0.40,52,2600
+2026-06-02,Google Search,Mobile,1100,0.58,20,800
+2026-06-02,Facebook Ads,Mobile,950,0.62,40,2000
+2026-06-02,Direct Traffic,Desktop,480,0.28,18,900
+2026-06-03,Google Search,Desktop,1450,0.45,41,2050
+2026-06-03,Google Search,Mobile,1300,0.52,28,1120
+2026-06-03,Facebook Ads,Mobile,1100,0.60,45,2250
+2026-06-03,Direct Traffic,Desktop,520,0.32,14,700
+2026-06-04,Google Search,Desktop,1700,0.38,58,2900
+2026-06-04,Google Search,Mobile,1250,0.50,30,1200
+2026-06-04,Facebook Ads,Mobile,1200,0.59,50,2500
+2026-06-04,Direct Traffic,Desktop,550,0.31,22,1100

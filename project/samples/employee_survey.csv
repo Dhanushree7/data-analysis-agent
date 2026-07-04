@@ -1,0 +1,16 @@
+Employee_ID,Department,Age,Years_at_Company,Job_Satisfaction,Monthly_Salary,Work_Life_Balance
+E001,Engineering,28,2,4,6200,3
+E002,Sales,34,5,3,5400,4
+E003,Marketing,25,1,5,4800,4
+E004,Engineering,42,8,5,8500,2
+E005,HR,31,3,4,5000,5
+E006,Engineering,36,6,2,7100,2
+E007,Sales,29,2,4,5200,3
+E008,Finance,45,10,5,9200,4
+E009,Marketing,38,7,3,5900,3
+E010,Sales,26,1,2,4300,5
+E011,HR,27,2,5,4900,4
+E012,Engineering,24,1,4,5100,4
+E013,Finance,33,4,4,6300,3
+E014,Sales,41,9,4,7200,3
+E015,Marketing,30,3,3,5300,4
