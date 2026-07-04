@@ -1,108 +1,75 @@
-# Data Analysis Agent — Agentic AI Web Application
+# Data Analysis Agent
 
-A full-stack, production-ready **Agentic AI Web Application** that empowers users to upload CSV or Excel files and ask complex questions in plain English. 
+A full-stack agentic AI application that lets users upload a CSV or Excel file and ask questions about it in plain English. Instead of guessing answers from memory, the agent writes and executes real Python/Pandas code against the uploaded dataset, then explains the results conversationally.
 
-Unlike standard chatbots that attempt to guess or hallucinate statistics from their training memory, this system acts as a true **AI Agent**: it plans its logical approach, writes real Python/Pandas code, executes it in a sandbox against the actual uploaded dataset, captures the results, optionally triggers visualization charts, and explains the answers conversationally.
-
----
-
-## 🚀 Key Features
-
-- **Robust File Ingress**: Upload CSV and Excel (`.xlsx`, `.xls`) files up to 10MB.
-- **Instant Previews**: Automatically extracts dataset structures, column data types, row counts, and previews the first few records.
-- **True Agentic Tool-calling**: Powered by Groq's `llama-3.3-70b-versatile` utilizing structural tool/function calling with:
-  - `run_pandas_query(code: str)`: Executes a Python/pandas code block on the dataset.
-  - `generate_chart(chart_type: str, x: str, y: str, data: list)`: Generates structured chart data for visual reporting.
-- **Multi-step Reasoning & Self-Correction**: The agent can run multiple queries sequentially. If a query fails (e.g., due to a key error or syntax issues), the agent catches the error, inspects it, rewrites the code, and retries.
-- **Expandable Execution Trace**: Each agent reply includes a "Show reasoning" trace, showing exactly which lines of Pandas code were executed and what they outputted—building trust through computational accuracy.
-- **Dynamic Charts**: Renders bar, line, and pie charts inline in the chat using responsive React Recharts.
-- **Pre-loaded Samples**: Explore immediately with 3 preloaded datasets:
-  - **Company Sales Performance** (Product sales, regions, profits).
-  - **Employee Satisfaction Survey** (Salaries, job satisfaction, department data).
-  - **Website Traffic & Conversions** (Ad traffic sources, bounce rates, daily revenue).
-- **Session Rate Limiting**: Limit of 1 request per 2 seconds per session to prevent runaway API usage.
+**Tech stack:** React · TypeScript · Express · Python · Pandas · Groq (Llama 3.3)
 
 ---
 
-## 🏗️ Architecture Flow
+## Overview
+
+Most chatbots asked "what's the average revenue in this file?" will hallucinate a plausible-sounding number. This project avoids that by giving the LLM tool-calling access to a real Python execution sandbox — the model plans an approach, calls a function to run Pandas code on the actual data, reads the real output, and only then responds. If a query errors out, the agent inspects the error and retries with corrected code (up to 5 attempts).
+
+## Features
+
+- Upload CSV or Excel files (`.csv`, `.xlsx`, `.xls`) up to 10MB, with an instant schema and data preview
+- Ask natural-language questions; the agent writes and runs Pandas code to answer them
+- Multi-step reasoning with self-correction when a query fails
+- Expandable "reasoning trace" showing the exact code executed for each answer
+- Auto-generated bar, line, and pie charts (React Recharts) when a visual is requested
+- A secondary fact-checking pass that independently verifies the main agent's numeric claims before they're shown
+- Three preloaded sample datasets (sales, employee survey, web traffic) for quick testing
+- Session-based rate limiting (1 request / 2 seconds) to avoid runaway API usage
+
+## Architecture
 
 ```
-[ User Question ]
-       │
-       ▼
-[ Planning Step ] ──► Read User Question + Schema details (columns, types, sample data)
-       │
-       ▼
-[ Execution Loop (Max 5 turns) ] <─────────────────────────┐
-       │                                                   │
-       ├──► Call run_pandas_query()                        │ (If error occurs,
-       │    └─► Run code in Sandbox ──► Capture result     │  agent rewrites
-       │                                                   │  & retries)
-       ├──► Call generate_chart() (if visual requested)   │
-       │    └─► Compile JSON Spec for Recharts             │
-       │                                                   │
-       └───────────────────────────────────────────────────┘
-       │
-       ▼
-[ Final Conversational Summary ] ──► Returned to frontend with code traces & charts
+User question
+      │
+      ▼
+Planning step — reads the question + dataset schema
+      │
+      ▼
+Execution loop (max 5 turns)
+      │
+      ├─ run_pandas_query(code) → runs in sandbox → captures result
+      │       └─ on error: agent inspects, rewrites, retries
+      │
+      ├─ generate_chart(type, x, y, data) → builds chart spec (if requested)
+      │
+      ▼
+Conversational summary — returned with code trace + charts
 ```
 
----
+## Tech Stack
 
-## 🛠️ Tech Stack
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Tailwind CSS, Recharts, Framer Motion, Lucide Icons |
+| Backend | Express (TypeScript/Node.js), Multer for file uploads |
+| Agent core | Python 3, Pandas, Openpyxl, Groq SDK (`llama-3.3-70b-versatile`) |
+| Session storage | In-memory, files kept under `/tmp/sessions` and cleared on restart |
 
-- **Frontend**: React (v19) + Tailwind CSS + Lucide Icons + Framer Motion + Recharts (for responsive visualizations).
-- **Backend API**: Express (TypeScript + Node.js) + Multer (for secure file uploads).
-- **Agent Core**: Python (v3) + Pandas + Openpyxl (for Excel decoding) + official Groq SDK.
-- **In-Memory Storage**: Session files are kept under `/tmp/sessions/` on the server and are automatically cleared when the container restarts.
+## Getting Started
 
----
-
-## 💻 Local Installation & Setup
-
-Ensure you have **Node.js (v18+)**, **Python (v3.10+)**, and **pip** installed.
-
-### 1. Clone & Install Frontend / Backend Dependencies
+**Requirements:** Node.js 18+, Python 3.10+, pip
 
 ```bash
-# Clone the repository and navigate to root
+# 1. Install frontend/backend dependencies
 npm install
-```
 
-### 2. Install Python Dependencies
-
-```bash
+# 2. Install Python dependencies
 pip install pandas openpyxl groq
-```
 
-### 3. Configure Secrets
-
-Create a `.env` file at the root of the project:
-
-```env
+# 3. Configure secrets — create a .env file in the project root
 GROQ_API_KEY="your-groq-api-key-here"
-```
 
-*Note: You can obtain an API key from the [Groq Console](https://console.groq.com/).*
-
-### 4. Run the Development Server
-
-Start the full-stack server on port `3000`:
-
-```bash
+# 4. Start the dev server
 npm run dev
 ```
 
-Open your browser and visit `http://localhost:3000` to interact with the Data Analysis Agent!
+Then open `http://localhost:3000`.
 
----
+> **Note (Windows):** if you hit a `spawn python3 ENOENT` or "Python was not found" error, your system likely resolves Python through the `py` launcher instead of `python3`. Update the `spawn(...)` calls in `server.ts` to use `"py"` instead.
 
-## 📊 Deployment
-
-The app is fully optimized for Cloud Run deployment and container environments.
-- **Production Compilation**:
-  ```bash
-  npm run build
-  npm run start
-  ```
-- **Port Ingress**: The dev/start scripts are hardcoded to host `0.0.0.0` and port `3000` for seamless container routing.
+Get a free Groq API key at [console.groq.com](https://console.groq.com/).
