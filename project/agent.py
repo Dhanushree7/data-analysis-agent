@@ -181,7 +181,7 @@ Respond ONLY with the JSON object. Do not include markdown code wrappers or othe
     for turn in range(3):
         try:
             response = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+                model="llama-3.3-70b-versatile",
                 messages=verifier_messages,
                 tools=tools,
                 tool_choice="auto",
@@ -219,7 +219,7 @@ Respond ONLY with the JSON object. Do not include markdown code wrappers or othe
 
     try:
         final_response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="llama-3.3-70b-versatile",
             messages=verifier_messages,
             response_format={"type": "json_object"},
             temperature=0.1
@@ -406,7 +406,7 @@ GUIDELINES FOR CODE EXECUTION:
             for attempt in range(2):
                 try:
                     response = client.chat.completions.create(
-                        model="llama-3.1-8b-instant",
+                        model="llama-3.3-70b-versatile",
                         messages=messages,
                         tools=tools,
                         tool_choice="auto",
@@ -513,7 +513,7 @@ GUIDELINES FOR CODE EXECUTION:
         if not final_answer:
             try:
                 final_response = client.chat.completions.create(
-                    model="llama-3.1-8b-instant",
+                    model="llama-3.3-70b-versatile",
                     messages=messages,
                     temperature=0.3
                 )
