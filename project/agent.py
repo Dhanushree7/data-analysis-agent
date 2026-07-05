@@ -399,16 +399,36 @@ GUIDELINES FOR CODE EXECUTION:
 
         # Execute agentic loop (up to 5 turns)
         for turn in range(5):
-            try:
-                response = client.chat.completions.create(
-                    model="llama-3.3-70b-versatile",
-                    messages=messages,
-                    tools=tools,
-                    tool_choice="auto",
-                    temperature=0.1
-                )
-            except Exception as e:
-                print(json.dumps({"error": f"Groq API completion error: {str(e)}"}), flush=True)
+            response = None
+            last_error = None
+            # Retry once on the known Llama/Groq "tool_use_failed" glitch, where the
+            # model emits a raw <function=...> text block instead of a structured tool_call.
+            for attempt in range(2):
+                try:
+                    response = client.chat.completions.create(
+                        model="llama-3.3-70b-versatile",
+                        messages=messages,
+                        tools=tools,
+                        tool_choice="auto",
+                        temperature=0.1
+                    )
+                    break
+                except Exception as e:
+                    last_error = e
+                    err_str = str(e)
+                    if "tool_use_failed" in err_str and attempt == 0:
+                        # Nudge the model with a stricter reminder and retry once.
+                        messages.append({
+                            "role": "user",
+                            "content": "Reminder: you must call the run_pandas_query or generate_chart "
+                                       "function using the structured tool-calling format only. "
+                                       "Do not write out a <function=...> block as plain text."
+                        })
+                        continue
+                    break
+
+            if response is None:
+                print(json.dumps({"error": f"Groq API completion error: {str(last_error)}"}), flush=True)
                 return
 
             response_message = response.choices[0].message
