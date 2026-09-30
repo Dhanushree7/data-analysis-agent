@@ -1,6 +1,5 @@
 # Data Analysis Agent
-
-A full-stack agentic AI application that lets users upload a CSV or Excel file and ask questions about it in plain English. Instead of guessing answers from memory, the agent writes and executes real Python/Pandas code against the uploaded dataset, then explains the results conversationally.
+AI-powered data analysis agent that converts natural-language questions into executable Pandas analysis and verifies the results.
 
 **Tech stack:** React · TypeScript · Express · Python · Pandas · Groq (Llama 3.3)
 
